@@ -1,5 +1,12 @@
 score = 0;
-cross = true;
+cross = true; //score will be increase
+
+audio = new Audio('music.mp3');
+audiogo = new Audio('gameover.mp3');
+
+setTimeout(() => {
+    audio.play();
+},1000);
 
 document.onkeydown = function(e) {
     console.log("Key code is: ", e.keyCode)
@@ -36,21 +43,31 @@ setInterval(() => {
 
     offsetX = Math.abs(dx-ox);
     offsetY = Math.abs(dy-oy);
-    console.log(offsetX, offsetY)
-    if(offsetX < 100 && offsetY < 60){
-        gameOver.style.visibility = 'visible';
+    //console.log(offsetX, offsetY)
+    if(offsetX < 75 && offsetY < 60){
+        gameOver.innerHTML = "Game Over - Reload to Start Over!";
         obstacle.classList.remove('obstacleAni')
+        audiogo.play();
+        setTimeout(() => {
+           audiogo.pause();
+           audio.pause();
+        },1000);
     }
-    else if(offsetX < 145 && cross){
+    else if(offsetX < 185 && cross){
         score+=1;
         updateScore(score);
         cross = false;
         setTimeout(() => {
             cross = true;
-        }, 1000)
-    }
+        }, 1000);
+        setTimeout(() => {
+        aniDur = parseFloat(window.getComputedStyle(obstacle, null).getPropertyValue('animation-duration'));
+        newDur = aniDur - 0.1; //animation duration less, obstacle fast
+        obstacle.style.animationDuration = newDur + 's';
+    }, 500);
+}
 
-}, 100);
+}, 10);
 
 function updateScore(score){
     scoreCont.innerHTML = "Your Score: " + score;
